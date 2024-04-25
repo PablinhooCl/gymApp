@@ -16,6 +16,7 @@ dotenv.config();
 mongoose.set('strictQuery', false);
 
 const { mongoUrl } = process.env;
+const { PORT } = process.env || 5000;
 
 const database = 'gymApp';
 
@@ -65,9 +66,9 @@ const indexRouter = require('./routes/index');
 
 app.use('/', indexRouter);
 
-app.listen(5000, () => {
-  console.log('app listening on port 5000!');
-  swaggerDocs(app, 5000);
+app.listen(PORT, () => {
+  console.log('app listening!');
+  swaggerDocs(app, PORT);
 });
 
 module.exports = { app };
