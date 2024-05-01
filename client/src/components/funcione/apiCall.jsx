@@ -1,13 +1,12 @@
 import axios from 'axios';
-
-const server = 'http://localhost:5000/';
+import { API_HOST } from '../../config';
 
 const ApiCall = async (method, api, formData, rejectWithValue) => {
   console.log('apicall', formData);
   try {
     const config = {
       method,
-      url: `${server}${api}`,
+      url: `${API_HOST}${api}`,
       data: formData,
       headers: {
         'Content-Type': 'application/json',

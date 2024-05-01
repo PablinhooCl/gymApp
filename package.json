@@ -1,0 +1,19 @@
+{
+  "name": "gymapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build --workspaces"
+  },
+  "workspaces": [
+    "client",
+    "server_noSQL",
+    "server_SQL"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@flydotio/dockerfile": "^0.5.7"
+  }
+}
