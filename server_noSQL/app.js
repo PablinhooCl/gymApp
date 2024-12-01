@@ -16,7 +16,6 @@ dotenv.config();
 mongoose.set('strictQuery', false);
 
 const { mongoUrl } = process.env;
-const { PORT } = process.env || 5000;
 
 const database = 'gymApp';
 
@@ -31,7 +30,7 @@ async function connectToDatabase() {
     console.log('Connected to MongoDB');
   }
   catch (error) {
-    console.error('Error connecting to MongoDB:', error.message);
+    console.error('Error connecting to MongoDB:', error.message, error);
     process.exit(1);
   }
 }
@@ -66,9 +65,10 @@ const indexRouter = require('./routes/index');
 
 app.use('/', indexRouter);
 
-app.listen(PORT, () => {
-  console.log('app listening!');
-  swaggerDocs(app, PORT);
-});
+const PORT = process.env.PORT || 3000;
+const HOST = '0.0.0.0';
 
-module.exports = { app };
+app.listen(PORT, HOST, () => {
+  console.log(`app listening! ${PORT}`);
+  swaggerDocs(app);
+});

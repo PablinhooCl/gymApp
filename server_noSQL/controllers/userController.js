@@ -41,11 +41,12 @@ exports.userSignUp = asyncHandler(async (req, res, next) => {
     await newUser.save();
 
     console.log('Usuario creado con exito');
-    next();
+    res.status(200).send('User registered successfully, verification email sent');
+    return next();
   }
   catch (error) {
     console.log(3);
-    return res.status(400).send('Error creating new user');
+    return res.status(400).send('Error registering new user');
   }
 });
 
@@ -56,11 +57,11 @@ exports.userLogin = asyncHandler(async (req, res, next) => {
     }
     if (!user) {
       console.log(user);
-      return res.status(401).json({ error: 'Auth Error!', user });
+      return res.status(401).json({ error: 'Unauthorized - Incorrect username or password', user });
     }
     try {
       const userToken = generateToken(user);
-      return res.status(200).send({ message: 'Inicio de sesión exitoso', userToken, user });
+      return res.status(200).send({ message: 'User logged in successfully', userToken, user });
     }
     catch (error) {
       return next(error);
@@ -118,7 +119,7 @@ exports.userAddInfo = [
         });
 
         await userUpdate.save();
-        return res.status(200).send({ message: 'Datos actualizados correctamente', userUpdate });
+        return res.status(200).send({ message: 'User information created successfully.', userUpdate });
       }
 
       const userUpdate = await User.findByIdAndUpdate(user._id, {
@@ -132,10 +133,10 @@ exports.userAddInfo = [
         }
       }, { new: true });
       await userUpdate.save();
-      return res.status(200).send({ message: 'Datos agregados correctamente', userUpdate });
+      return res.status(200).send({ message: 'User information updated successfully.', userUpdate });
     }
     catch (error) {
-      return res.status(400).send('Error actualizando los datos del usuario');
+      return res.status(400).send('Error updating user information.');
     }
   })
 
@@ -153,9 +154,9 @@ exports.userAddProfileImg = [
       { new: true }
     );
     if (!user) {
-      return res.status(400).send('No se pudo actualizar la foto de perfil');
+      return res.status(400).send('Error updating user profile image.');
     }
-    return res.status(200).send('Foto de perfil avuatlizada correctamente');
+    return res.status(200).send('User profile image updated successfully.');
   })
 ];
 
@@ -169,10 +170,10 @@ exports.userInfo = [
     ]);
 
     if (user === null) {
-      const err = new Error('no USER found');
+      const err = new Error('no USER found.');
       err.status = 404;
       return next(err);
     }
-    return res.status(200).send({ message: 'Informacion entregada correctamente', user, userRoutines });
+    return res.status(200).send({ message: 'User data delivered.', user, userRoutines });
   })
 ];

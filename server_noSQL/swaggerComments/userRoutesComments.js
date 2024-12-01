@@ -1,9 +1,13 @@
+/* eslint-disable max-len */
+
 /**
  * @openapi
  * /new-user:
  *   post:
  *     summary: Register a new user
  *     description: Register a new user and send a verification email
+ *     tags:
+ *       - User
  *     requestBody:
  *       required: true
  *       content:
@@ -30,6 +34,8 @@
  *   post:
  *     summary: User login
  *     description: Login a user with username and password
+ *     tags:
+ *       - User
  *     requestBody:
  *       required: true
  *       content:
@@ -60,8 +66,6 @@
  *                   description: The username of the authenticated user
  *       401:
  *         description: Unauthorized - Incorrect username or password
- *       500:
- *         description: Internal server error
  */
 
 /**
@@ -70,6 +74,8 @@
  *   put:
  *     summary: Verify user by verification ID
  *     description: Verify a user by their verification ID
+ *     tags:
+ *       - User
  *     parameters:
  *       - in: path
  *         name: verificationId
@@ -79,9 +85,11 @@
  *         description: The verification ID of the user
  *     responses:
  *       200:
- *         description: User verified successfully
- *       400:
- *         description: Error verifying user
+ *         description: User verified successfully.
+ *       500:
+ *         description: Error verifying user.
+ *       404:
+ *         User not found or already verified.
  */
 
 /**
@@ -92,6 +100,8 @@
  *     description: Add or update user information like weight, height, and years
  *     security:
  *       - bearerAuth: []
+ *     tags:
+ *       - User
  *     requestBody:
  *       required: true
  *       content:
@@ -110,7 +120,7 @@
  *                     type: number
  *     responses:
  *       200:
- *         description: User information updated successfully
+ *         description: User information created successfully / User information updated successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -123,7 +133,7 @@
  *                   type: object
  *                   description: The updated user object
  *       400:
- *         description: Error updating user information
+ *         description: Error updating user information.
  */
 
 /**
@@ -132,6 +142,8 @@
  *   put:
  *     summary: Add or update user profile image
  *     description: Add or update user profile image
+ *     tags:
+ *       - User
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -146,7 +158,7 @@
  *                 format: binary
  *     responses:
  *       200:
- *         description: User profile image updated successfully
+ *         description: User profile image updated successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -156,7 +168,7 @@
  *                   type: string
  *                   description: A message indicating the success of the operation
  *       400:
- *         description: Error updating user profile image
+ *         description: Error updating user profile image.
  */
 
 /**
@@ -171,7 +183,7 @@
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Información del usuario y sus rutinas creadas.
+ *         description: User data delivered.
  *         content:
  *           application/json:
  *             schema:
@@ -189,7 +201,7 @@
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       404:
- *         description: Usuario no encontrado.
+ *         description: no USER found.
  *         content:
  *           application/json:
  *             schema:

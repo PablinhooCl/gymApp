@@ -1,8 +1,7 @@
 const asyncHandler = require('express-async-handler');
 
-const { passport, generateToken, authenticateToken } = require('../configuration/passport');
+const { authenticateToken, optionalAuthToken } = require('../configuration/passport');
 
-const User = require('../model/userModel');
 const Routine = require('../model/routineModel');
 
 exports.createRoutine = [
@@ -20,10 +19,10 @@ exports.createRoutine = [
     });
     try {
       await routine.save();
-      return res.status(200).send('Rutina creada exitosamente');
+      return res.status(200).send('Routine created successfully.');
     }
     catch (error) {
-      return res.status(400).send('Error al crear la rutina');
+      return res.status(400).send('Error creating routine.');
     }
   })
 ];
@@ -38,7 +37,7 @@ exports.updateRoutine = [
     const routine = await Routine.findById(routineId);
 
     if (userInfo.username !== routine.createdBy) {
-      return res.status(400).send('Solo el creador puede hacer cambios, puedes copiar la rutina y hacer los cambios deseados a esa.');
+      return res.status(401).send('Unauthorized - Only the creator can update the routine.');
     }
 
     try {
@@ -53,13 +52,42 @@ exports.updateRoutine = [
       );
 
       if (!updatedRoutine) {
-        return res.status(404).send('Rutina no encontrada');
+        return res.status(404).send('Routine not found.');
       }
 
-      return res.status(200).send({ message: 'Rutina actualizada correctamnete', updatedRoutine });
+      return res.status(200).send({ message: 'Routine updated successfully.', updatedRoutine });
     }
     catch (error) {
-      return res.status(400).send('Error al actualizar la rutina');
+      return res.status(400).send('Error updating routine.');
+    }
+  })
+];
+
+exports.getRoutine = [
+  optionalAuthToken,
+  asyncHandler(async (req, res) => {
+    let userId;
+    if (req.user) {
+      userId = req.user.prop.id;
+    }
+
+    // const user = await User.findById(userId);
+
+    try {
+      const routines = await Routine.find({
+        $or: [
+          { privacy: { $ne: 'private' } },
+          { createdBy: userId }
+        ]
+      });
+
+      return res.status(200).send({
+        data: routines.data,
+        message: 'Routine\'s data delivered succefully. '
+      });
+    }
+    catch (error) {
+      return res.status(400).json('Error sending data.', error);
     }
   })
 ];

@@ -8,16 +8,20 @@ const excersiceController = require('../controllers/excerciseController');
 const API = require('../configuration/api');
 
 router
-  .post('/new-user', userController.userSignUp, API.sendVerification)
-  .put('/user/:verificationId', API.userVerification)
-  .put('/user/add-data', userController.userAddInfo)
-  .post('/login', userController.userLogin)
-  .put('/user/profile-pic', userController.userAddProfileImg)
+  .get('/excersice', excersiceController.getExcercise)
+  .post('/user/post-excersice', excersiceController.createPendingExcercise)
+  .post('/admin/approve-excersice', excersiceController.createPendingExcercise)
+  .put('/user/post-comment-excersice', excersiceController.addCommentExcercise)
+
+  .get('/routine', routineController.getRoutine)
   .post('/user/create-routine', routineController.createRoutine)
   .put('/user/update-routine', routineController.updateRoutine)
-  .post('/user/post-excersice', excersiceController.createPendingExcercise)
-  .post('/admin/aprove-excersice', excersiceController.createPendingExcercise)
+
   .get('/user/info', userController.userInfo)
-  .put('/user/post-excersice', excersiceController.addCommentExcercise);
+  .post('/new-user', userController.userSignUp, API.sendVerification)
+  .post('/login', userController.userLogin)
+  .put('/user/:verificationId', API.userVerification)
+  .put('/user/add-data', userController.userAddInfo)
+  .put('/user/profile-pic', userController.userAddProfileImg);
 
 module.exports = router;

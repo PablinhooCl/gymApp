@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "deploy": "fly deploy",
+    "logs:prod": "fly logs"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

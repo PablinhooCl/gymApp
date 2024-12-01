@@ -32,7 +32,7 @@ exports.sendVerification = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    return res.status(404).send('Usuario no encontrado');
+    return res.status(404).send('User not found.');
   }
 
   const { verification } = user;
@@ -48,12 +48,21 @@ exports.sendVerification = asyncHandler(async (req, res) => {
         `Por favor, haz clic en el siguiente enlace para verificar tu correo electrónico: ${webUrl}user/${verification}`
   };
 
-  transporter.sendMail(mailOption, (error, info) => {
-    if (error) {
-      return res.status(400).send({ message: 'Error al enviar correo de verificacion', error });
-    }
-    return res.status(200).send({ message: 'Cuenta creada, Correo de verificacion enviado correctamente', info });
-  });
+  try {
+    const info = await transporter.sendMail(mailOption);
+    return res.status(200).json({
+      success: true,
+      message: 'Cuenta creada, correo de verificación enviado correctamente',
+      info
+    });
+  }
+  catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error al enviar correo de verificación.',
+      error
+    });
+  }
 });
 
 exports.userVerification = asyncHandler(async (req, res) => {
@@ -66,10 +75,25 @@ exports.userVerification = asyncHandler(async (req, res) => {
       { new: true }
     );
 
-    return res.status(200).send('Usuario verificado correctamente');
+    if (!userValidated) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found or already verified.'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'User verified succesfully.',
+      user: userValidated
+    });
   }
   catch (error) {
-    return res.status(400).send({ message: 'Error al actualizar', error });
+    return res.status(500).json({
+      success: false,
+      message: 'Error verifying user.',
+      error: error.message
+    });
   }
 });
 
@@ -119,9 +143,9 @@ const options = {
 
 const swaggerSpec = swaggerJSDoc(options);
 
-exports.swaggerDocs = (app, port) => {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+exports.swaggerDocs = (app) => {
+  app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   console.log(
-    'Version 1 Docs are available on http://localhost:5000/api-docs'
+    'Version 1 Docs are available on /api-docs'
   );
 };

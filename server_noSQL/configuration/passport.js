@@ -77,8 +77,26 @@ function authenticateToken(req, res, next) {
   return next();
 }
 
+function optionalAuthToken(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  if (authHeader) {
+    const token = authHeader && authHeader.split(' ')[1];
+
+    jwt.verify(token, jwtTokenSecret, (err, user) => {
+      if (err) {
+        return res.status(403).json({ message: 'Token no valido', err });
+      }
+      req.user = user;
+      return req.user;
+    });
+  }
+  return next();
+}
+
 module.exports = {
   passport,
   generateToken,
-  authenticateToken
+  authenticateToken,
+  optionalAuthToken
 };
