@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 const passport = require('passport');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -15,7 +16,7 @@ dotenv.config();
 
 mongoose.set('strictQuery', false);
 
-const { mongoUrl } = process.env;
+const { mongoUrl, SESSION_SECRET } = process.env;
 
 const database = 'gymApp';
 
@@ -45,12 +46,18 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+const store = new MongoDBStore({
+  uri: mongoUrl,
+  collection: 'sessions'
+});
+
 app.use(session({
-  secret: 'mysecret',
-  cookie: { maxAge: 3600000 },
+  secret: SESSION_SECRET,
+  resave: false,
   saveUninitialized: false,
-  resave: false
+  store
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
